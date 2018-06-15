@@ -1,0 +1,5 @@
+nodemon.json
+*.log
+/uploads
+/node_modules
+.vscode
