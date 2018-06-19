@@ -60,15 +60,13 @@ exports.search_for_game_data = (req, res, next) => {
     .then(data => {
       console.log("First step data: ", data);
       if(data.length>0) {       
-        return data; //Have the data already found in Matchup DB
+        return data[0]; //Have the data already found in Matchup DB
       } else {
         return new Promise((resolve,reject) => {
           Games.findOne({games: {$elemMatch: {id: id}}})
             .then(selected_game_data => {
               if(selected_game_data.games.length > 0){
                 const uri1 = `${process.env.API_URI}${id}${process.env.API_URI2}`;
-                // const uri1 = "https://jsonplaceholder.typicode.com/posts/1";
-                console.log("fetching data from: ", uri1);
                 fetch(uri1)
                   .then(api => api.json())
                   .then(api_data => {
@@ -79,6 +77,13 @@ exports.search_for_game_data = (req, res, next) => {
                     } else {
                       resolve("Game data incomplete. Unable to process");
                     }
+                  })
+                  .catch(err => {
+                    console.log("Error: ", err);
+                    res.status(500).json({
+                      message: "what's the fetch error?",
+                      error: err
+                    })
                   })
               } else {
                 resolve("Odd no game was played?")
