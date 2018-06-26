@@ -6,7 +6,7 @@ const matchupController = require("../controllers/matchup");
 
 router.get('/search/:gameID', matchupController.search_for_game_data);
 
-router.get("/findall", matchupController.findall);
+// router.get("/findall", matchupController.findall);
 
 router.delete('/remove/:gameID', matchupController.del_game);
 

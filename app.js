@@ -3,7 +3,6 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const fetch = require('node-fetch');
 
 const userRoutes = require('./api/routes/user');
 const gameRoutes = require('./api/routes/games');

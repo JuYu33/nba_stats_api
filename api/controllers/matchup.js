@@ -35,6 +35,7 @@ function saveInfo(save_data){
     })
 }
 
+/*
 exports.findall = (req, res, next) => {
   Matchup.find()
     .exec()
@@ -51,6 +52,7 @@ exports.findall = (req, res, next) => {
       })
     })
 }
+*/
 
 exports.search_for_game_data = (req, res, next) => {
   const id = req.params.gameID;

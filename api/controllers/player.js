@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 
 exports.get_game = (req, res, next) => {
   const gameID = req.params.gameID;
-  const api_uri = `${process.env.API_URI}${game_id}/summary.json?api_key=${process.env.API_KEY}`;
+  const api_uri = `${process.env.API_URI}${gameID}/summary.json?api_key=${process.env.API_KEY}`;
   console.log(api_uri);
 
   Player.find()
