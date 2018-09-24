@@ -3,3 +3,5 @@ nodemon.json
 /uploads
 /node_modules
 .vscode
+sac.json
+test.js

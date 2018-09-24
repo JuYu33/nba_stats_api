@@ -2,6 +2,74 @@ const mongoose = require("mongoose");
 const Games = require('../models/games');
 const TeamInfo = require('../models/teams');
 
+exports.get_games_on_date = (req, res, next) => {
+  const date = req.params.gamesDate;
+  Games.find({"date":date})
+    .exec()
+    .then(data => data.length > 0 ? data[0] : "no games played")
+    .then(response => {
+      console.log("need to add scores", response);
+      res.status(201).json({
+        message: `On date: ${date}`,
+        response
+      })
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err
+      })
+    })
+};
+
+exports.get_team_info = (req, res, next) => {
+  const team_name = req.params.teamname;
+  TeamInfo.find({"team_name": team_name})
+    .exec()
+    .then(results => {
+      console.log("Games played: ", results[0].dates.length);
+      res.status(200).json({
+        message: "All teams info",
+        results
+      })
+    })
+    .catch(err => {
+      res.status(500).json({error: err})
+    })
+}
+
+exports.find_all = (req, res, next) => {
+
+  Games.find()
+    .exec()
+    .then(response => {
+      const alldates = {};
+      const months = {};
+      const teams = [];
+      response.forEach(x => {
+        alldates[x.date] = x.games.length;
+        const [year, month, ...rest] = x.date.split('-');
+        if(months[month]) {
+          months[month] += x.games.length;
+        } else {
+          months[month] = x.games.length;
+        }
+      })
+
+
+      res.status(200).json({
+        message: "all games",
+        data: [months, alldates]
+      })
+
+    })
+    .catch(err => {
+      res.status(400).json({
+        message: "Failure getting all",
+        error: err
+      })
+    })
+}
+
 /*
 exports.fix_and_save = (req,res,next) => {
   const xlsx = require('xlsx');
@@ -67,9 +135,7 @@ exports.fix_and_save = (req,res,next) => {
       })
     })
 
-}
-*/
-/*
+};
 exports.test_the_waters = (req,res,next) => {
   const xlsx = require('xlsx');
   const wkbk = xlsx.readFile('./sch.xlsx');
@@ -147,9 +213,7 @@ exports.test_the_waters = (req,res,next) => {
     })
     
 
-}
-
-
+};
 const saveMatchupInfo = (inputArr) => {
   const [team,opponent,id,date,isHome] = inputArr;
 
@@ -178,8 +242,7 @@ const saveMatchupInfo = (inputArr) => {
         // return new_team.save()
       }
     })
-}
-
+};
 exports.remove_games = (req,res,next) => {
   console.log(req.params.date);
   TeamInfo.deleteMany({
@@ -195,8 +258,7 @@ exports.remove_games = (req,res,next) => {
     .catch(err => {
       res.status(500).json({error: err});
     })
-}
-
+};
 exports.create_team = (req,res,next) => {
   const new_team = new TeamInfo({
     _id: new mongoose.Types.ObjectId(),
@@ -217,25 +279,7 @@ exports.create_team = (req,res,next) => {
       })
     })
 
-}
-*/
-exports.get_team_info = (req, res, next) => {
-  const team_name = req.params.teamname;
-  TeamInfo.find({"team_name": team_name})
-    .exec()
-    .then(results => {
-      console.log("Games played: ", results[0].dates.length);
-      res.status(200).json({
-        message: "All teams info",
-        results
-      })
-    })
-    .catch(err => {
-      res.status(500).json({error: err})
-    })
-}
-
-/*
+};
 exports.get_all_games = (req, res, next) => {
   const entry_index = req.params.endix
   Games.find()
@@ -293,8 +337,6 @@ exports.get_all_games = (req, res, next) => {
       })
     })
 };
-
-
 exports.sort_game_dates = (req, res, next) => {
   TeamInfo.find()
     .exec()
@@ -317,29 +359,7 @@ exports.sort_game_dates = (req, res, next) => {
         error: err
       })
     })
-}
-*/
-
-exports.get_games_on_date = (req, res, next) => {
-  const date = req.params.gamesDate;
-  Games.find({"date":date})
-    .exec()
-    .then(data => data.length > 0 ? data[0] : "no games played")
-    .then(response => {
-      console.log("Games on this date: " + response.games.length)
-      res.status(201).json({
-        message: `On date: ${date}`,
-        response
-      })
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: err
-      })
-    })
 };
-
-/*
 exports.serve_new_data = (req, res, next) => {
   const teams = {};
   
@@ -369,11 +389,7 @@ exports.serve_new_data = (req, res, next) => {
     })
 
   
-}
-*/
-
-
-/*
+};
 exports.save_game = (req, res, next) => {
   const gamesThisDate = new Games({
     _id: new mongoose.Types.ObjectId(),
@@ -397,9 +413,6 @@ exports.save_game = (req, res, next) => {
       })
     })
 };
-*/
-
-/*
 exports.delete_game = (req,res,next) => {
   const id = req.params.gameId
 
@@ -417,5 +430,5 @@ exports.delete_game = (req,res,next) => {
         error: err
       })
     })
-}
+};
 */

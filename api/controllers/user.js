@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const fs = require('fs');
+const google = require('googleapis');
+
 const User = require('../models/user');
 
 exports.user_create = (req,res,next) => {
@@ -126,4 +129,60 @@ exports.find_users = (req,res,next) => {
         error: err
       })
     })
+}
+
+exports.user_sendmail = (req,res,next) => {
+  const TOKEN_PATH = require("../../../gmailtest");
+  console.log("Request: ", req.body);
+  const oAuth2Client = new google.auth.OAuth2(
+    process.env.G_CID, 
+    process.env.G_SEC, 
+    process.env.G_RED
+  );
+
+  fs.readFile(TOKEN_PATH, (err, token) => {
+    oAuth2Client.setCredentials(JSON.parse(token));
+    console.log(JSON.parse(token));
+    sendmail(oAuth2Client);
+  });
+
+  async function sendmail(auth) {
+    // console.log("Where is auth coming from?: ", auth);
+    const gmail = google.gmail({version: 'v1', auth});
+  
+  
+    const subject = 'New Message TESTING 135790';
+
+
+    const utf8Subject = `=?utf-8?B?${Buffer.from(subject).toString('base64')}?=`;
+    const messageParts = [
+      'From: Adam Inn <paerotest@google.com>',
+      'To: Adam Inn <paerotest@gmail.com>',
+      'Content-Type: text/html; charset=utf-8',
+      'MIME-Version: 1.0',
+      `Subject: ${utf8Subject}`,
+      '',
+      'This IS A TEST. Ignore I guess',
+      'So... <b>Hello! WHY AM I BOLDING SOME THINGS HERE?!?!</b> '
+    ];
+    const message = messageParts.join('\n');
+  
+    // The body needs to be base64url encoded.
+    const encodedMessage = Buffer.from(message)
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+
+      console.log("AUTH IS: ", auth);
+    // const res = await gmail.users.messages.send({
+    //   userId: 'me',
+    //   requestBody: {
+    //     raw: encodedMessage
+    //   }
+    // });
+    // console.log(res.data);
+
+    return 1;
+  }
 }

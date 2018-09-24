@@ -13,5 +13,7 @@ router.delete('/delete/:userId', checkAuth, userController.delete_user);
 
 router.get('/lookup', userController.find_users);
 
+router.post('sendmail', userController.user_sendmail);
+
 
 module.exports = router;
